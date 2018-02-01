@@ -1,3 +1,7 @@
 .input {
   height: 2.6em;
+  &::-webkit-input-placeholder {color:$grey-dark;}
+  &::-moz-placeholder {color:$grey-dark;} /* firefox 19+ */
+  &:-ms-input-placeholder {color:$grey-dark;} /* ie */
+  &:-moz-placeholder {color:$grey-dark;}
 }
