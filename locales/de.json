@@ -371,6 +371,12 @@
       "label": "Registrieren",
       "next": "Weiter",
       "back": "Zurück"
+    },
+    "reset": {
+      "label": "Passwort vergessen",
+      "buttonLabel": "Absenden",
+      "description": "Du hast Dein Passwort vergessen? Dann gib hier Deine E-Mailadresse ein um ein neues Passwort zu setzen.",
+      "successInfo": "Du erhälst in kürze eine E-Mail mit weiteren Anweisungen zum erneuern deines Passwortes."
     }
   },
   "ressource": {

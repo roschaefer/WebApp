@@ -3,16 +3,12 @@
     <div class="card" :class="classes">
       <div class="card-content">
         <hc-flag-switch />
-        <nuxt-link v-if="false"
-                   :to="$route.params.path || '/'"
-                   class="delete"
-                   style="display: block; position: absolute; right: 1.5rem; top: 1rem;"></nuxt-link>
         <div class="card-teaser">
           <nuxt-link :to="$route.params.path || '/'">
             <img src="/assets/images/registration/humanconnection.svg" alt="Human Connection"/>
           </nuxt-link>
         </div>
-        <h6 class="subtitle is-6">{{ $t('auth.login.description') }}</h6>
+        <h6 class="subtitle is-6">{{ $t('auth.reset.description') }}</h6>
         <form @submit.prevent="login">
           <div class="field">
             <div class="control has-icons-right">
@@ -29,31 +25,15 @@
               </span>
             </div>
           </div>
-          <div class="field">
-            <div class="control has-icons-right">
-              <input :class="{ 'input': true, 'is-danger': $v.form.password.$error }"
-                     name="password"
-                     type="password"
-                     :placeholder="$t('auth.account.password')"
-                     v-model.trim="form.password"
-                     @blur="$v.form.password.$touch">
-              <span v-if="$v.form.password.$error" class="icon is-small is-right">
-                <i class="fa fa-warning"></i>
-              </span>
-            </div>
-          </div>
-          <div class="field has-text-left">
-            <b-switch v-model="stayLoggedIn">{{ $t('auth.login.stayLoggedIn') }}</b-switch>
-          </div>
           <hc-button color="primary"
                      name="submit"
-                     @click.prevent="login"
+                     @click.prevent="doReset"
                      size="medium"
                      type="button"
                      class="is-fullwidth"
                      :isLoading="isLoading"
                      :disabled="$v.form.$invalid">
-            {{ $t('auth.login.label') }}
+            {{ $t('auth.reset.label') }}
           </hc-button>
         </form>
       </div>
@@ -61,36 +41,29 @@
         <nuxt-link :to="{ name: 'auth-register', params: { path: this.$route.params.path } }" class="card-footer-item">
           {{ $t('auth.register.noAccountYet') }}
         </nuxt-link>
-        <nuxt-link :to="{ name: 'auth-reset' }" class="card-footer-item">
-          {{ $t('auth.login.forgotPassword') }}
-        </nuxt-link>
       </footer>
     </div>
   </section>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
   import animatable from '~/components/mixins/animatable'
   import { validationMixin } from 'vuelidate'
   import { required, email } from 'vuelidate/lib/validators'
   import FlagSwitch from '~/components/Auth/FlagSwitch'
 
   export default {
-    middleware: 'anonymous',
     layout: 'blank',
-    mixins: [animatable, validationMixin],
     components: {
       'hc-flag-switch': FlagSwitch
     },
+    mixins: [animatable, validationMixin],
     data () {
       return {
         form: {
-          email: '',
-          password: ''
+          email: ''
         },
-        isLoading: false,
-        stayLoggedIn: false
+        isLoading: false
       }
     },
     validations () {
@@ -99,48 +72,27 @@
           email: {
             required,
             email
-          },
-          password: {
-            required
           }
         }
       }
     },
-    computed: {
-      ...mapGetters({
-        user: 'auth/user'
-      })
-    },
-    mounted () {
-      this.$nextTick(() => {
-        try {
-          this.$refs['focus'].focus()
-        } catch (err) {}
-
-        if (this.$route.params.path || this.$route.query.path) {
-          this.$snackbar.open({
-            message: `you have to login!`,
-            type: 'is-danger'
-          })
-        }
-      })
-    },
     methods: {
-      login () {
+      doReset () {
         if (this.$v.form.$invalid) {
           this.animate('shake')
           this.isLoading = false
           return
         }
         this.isLoading = true
-        this.$store.dispatch('auth/login', this.form)
-          .then(() => {
+        this.$store.dispatch('auth/resetpass', this.form)
+          .then((res) => {
+            console.log(res)
             this.$snackbar.open({
-              message: this.$t('auth.login.successInfo'),
+              message: this.$t('auth.reset.successInfo'),
               duration: 4000,
               type: 'is-success'
             })
-            this.$router.replace(this.$route.params.path || this.$route.query.path || '/')
+            this.$router.push('/auth/login')
           })
           .catch(err => {
             this.isLoading = false
@@ -154,7 +106,7 @@
     },
     head () {
       return {
-        title: this.$t('auth.login.label')
+        title: this.$t('auth.reset.label')
       }
     }
   }

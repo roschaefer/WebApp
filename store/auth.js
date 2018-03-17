@@ -153,6 +153,19 @@ export const actions = {
     commit('SET_USER', user)
     return user
   },
+  resetpass ({dispatch}, identifyUser) {
+    if (!identifyUser) { return false }
+    return this.app.$api.service('authManagement').create({
+      action: 'sendResetPwd',
+      value: identifyUser
+    })
+      .then(() => {
+        return true
+      })
+      .catch(err => {
+        console.error(err.message, err)
+      })
+  },
   verify ({dispatch}, verifyToken) {
     if (!verifyToken) { return false }
     return this.app.$api.service('authManagement').create({

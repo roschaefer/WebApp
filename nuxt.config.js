@@ -7,7 +7,7 @@ module.exports = {
       'auth-login',
       'auth-register',
       'auth-signup',
-      'auth-passwort-reset',
+      'auth-reset',
       'legal',
       'test'
     ]
